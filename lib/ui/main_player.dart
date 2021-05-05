@@ -10,6 +10,8 @@ class MainPlayer extends StatefulWidget {
 class _MainPlayerState extends State<MainPlayer> {
   final assetsAudioPlayer = AssetsAudioPlayer();
   Audio audio;
+  Duration duration = Duration(minutes: 0);
+  Duration position = Duration(minutes: 0);
 
   IconData iconPlayPause;
 
@@ -24,6 +26,18 @@ class _MainPlayerState extends State<MainPlayer> {
     );
     iconPlayPause = Icons.pause;
     assetsAudioPlayer.open(audio, showNotification: true);
+    // Notice
+    assetsAudioPlayer.current.listen((playingAudio) {
+      setState(() {
+        duration = playingAudio.audio.duration;
+      });
+    });
+    // Notice
+    assetsAudioPlayer.currentPosition.listen((currentPosition) {
+      setState(() {
+        position = currentPosition;
+      });
+    });
   }
 
   @override
@@ -89,21 +103,21 @@ class _MainPlayerState extends State<MainPlayer> {
           Text("Tan cung noi nho", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),), // HARDCODE
           SizedBox(height: 8,),
           Text("Will", style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w500),), // HARDCODE
-          SizedBox(height: 30,),
+          SizedBox(height: 10,),
           Container(
             padding: EdgeInsets.only(left: 20, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("2.25", style: TextStyle(fontSize: 13, color: Colors.grey.shade500, fontWeight: FontWeight.w500),), //HARDCODE
-                Text("4.40", style: TextStyle(fontSize: 13, color: Colors.grey.shade500, fontWeight: FontWeight.w500),), //HARDCODE
+                Text(position.toString().split('.').first.replaceFirst("0:", ""), style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w500),), //HARDCODE
+                Text(duration.toString().split('.').first.replaceFirst("0:", ""), style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w500),), //HARDCODE
               ],
             ),
           ),
           Slider(
             min: 0,
-            max: 2,
-            value: 1,
+            max: duration.inSeconds.toDouble(),
+            value: position.inSeconds.toDouble(),
           ),
           SizedBox(height: 30,),
           Center(
@@ -111,8 +125,8 @@ class _MainPlayerState extends State<MainPlayer> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: 60,
+                  width: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -121,8 +135,8 @@ class _MainPlayerState extends State<MainPlayer> {
                 ),
                 SizedBox(width: 16,),
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: 60,
+                  width: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -150,8 +164,8 @@ class _MainPlayerState extends State<MainPlayer> {
                     }
                   },
                   child: Container(
-                    height: 50,
-                    width: 50,
+                    height: 60,
+                    width: 60,
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(30),
@@ -161,8 +175,8 @@ class _MainPlayerState extends State<MainPlayer> {
                 ),
                 SizedBox(width: 16,),
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: 60,
+                  width: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -171,8 +185,8 @@ class _MainPlayerState extends State<MainPlayer> {
                 ),
                 SizedBox(width: 16,),
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: 60,
+                  width: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),

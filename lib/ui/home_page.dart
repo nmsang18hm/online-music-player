@@ -23,6 +23,17 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => MainPlayer()),
             );
           }
+        ),
+        songOnList(
+            title: "Tan cung noi nho",
+            singer: "Will",
+            cover: "https://drive.google.com/u/0/uc?id=1dHMaksfRwk2MSPjMRLlQINaQMf9mysyU&export=download",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainPlayer()),
+              );
+            }
         )
       ],
     );
