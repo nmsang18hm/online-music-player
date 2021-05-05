@@ -8,10 +8,13 @@ class MainPlayer extends StatefulWidget {
 }
 
 class _MainPlayerState extends State<MainPlayer> {
-  @override
-  Widget build(BuildContext context) {
-    final assetsAudioPlayer = AssetsAudioPlayer();
-    final audio = Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
+  final assetsAudioPlayer = AssetsAudioPlayer();
+  Audio audio;
+
+  IconData iconPlayPause;
+
+  _MainPlayerState(){
+    audio = Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
       metas: Metas(
         title:  "Tan cung noi nho",
         artist: "Will",
@@ -19,8 +22,12 @@ class _MainPlayerState extends State<MainPlayer> {
         image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
       ),
     );
+    iconPlayPause = Icons.pause;
     assetsAudioPlayer.open(audio, showNotification: true);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey.shade100,
       body: Column(
@@ -123,14 +130,34 @@ class _MainPlayerState extends State<MainPlayer> {
                   child: Icon(Icons.skip_previous, size: 20, color: Colors.black,),
                 ),
                 SizedBox(width: 16,),
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(30),
+                InkWell(
+                  onTap: (){
+                    /*assetsAudioPlayer.pause();
+                    setState(() {
+                      iconPlayPause = Icons.play_arrow;
+                    });*/
+                    if (iconPlayPause == Icons.pause) {
+                      assetsAudioPlayer.pause();
+                      setState(() {
+                        iconPlayPause = Icons.play_arrow;
+                      });
+                    }
+                    else {
+                      assetsAudioPlayer.play();
+                      setState(() {
+                        iconPlayPause = Icons.pause;
+                      });
+                    }
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Icon(iconPlayPause, size: 20, color: Colors.white,),
                   ),
-                  child: Icon(Icons.pause, size: 20, color: Colors.white,),
                 ),
                 SizedBox(width: 16,),
                 Container(
