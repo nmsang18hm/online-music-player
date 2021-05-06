@@ -12,6 +12,8 @@ class _MainPlayerState extends State<MainPlayer> {
   Audio audio;
   Duration duration = Duration(minutes: 0);
   Duration position = Duration(minutes: 0);
+  double valuePosition = 0.0;
+  bool isSliderChanging = false;
 
   IconData iconPlayPause;
 
@@ -37,6 +39,11 @@ class _MainPlayerState extends State<MainPlayer> {
       setState(() {
         position = currentPosition;
       });
+      if (!isSliderChanging) {
+        setState(() {
+          valuePosition = position.inSeconds.toDouble();
+        });
+      }
     });
   }
 
@@ -54,14 +61,16 @@ class _MainPlayerState extends State<MainPlayer> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
+                InkWell(
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Icon(Icons.arrow_back, color: Colors.grey.shade700, size: 20,),
                   ),
-                  child: Icon(Icons.arrow_back, color: Colors.grey.shade700, size: 20,),
                 ),
                 Text(
                   "PLAYING NOW",
@@ -117,7 +126,25 @@ class _MainPlayerState extends State<MainPlayer> {
           Slider(
             min: 0,
             max: duration.inSeconds.toDouble(),
-            value: position.inSeconds.toDouble(),
+            value: valuePosition,
+            onChanged: (value) {
+              setState(() {
+                valuePosition = value;
+              });
+            },
+            onChangeStart: (value) {
+              setState(() {
+                isSliderChanging = true;
+              });
+            },
+            onChangeEnd: (value) {
+              setState(() {
+                isSliderChanging = false;
+              });
+              assetsAudioPlayer.pause();
+              assetsAudioPlayer.seek(Duration(seconds: value.toInt()));
+              assetsAudioPlayer.play();
+            },
           ),
           SizedBox(height: 30,),
           Center(
