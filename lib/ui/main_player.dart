@@ -26,7 +26,7 @@ class _MainPlayerState extends State<MainPlayer> {
         image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
       ),
     );
-    iconPlayPause = Icons.pause;
+    iconPlayPause = Icons.pause_circle_outline;
     assetsAudioPlayer.open(audio, showNotification: true);
     // Notice
     assetsAudioPlayer.current.listen((playingAudio) {
@@ -50,7 +50,7 @@ class _MainPlayerState extends State<MainPlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey.shade100,
+      backgroundColor: Colors.grey.shade800,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -65,29 +65,21 @@ class _MainPlayerState extends State<MainPlayer> {
                   child: Container(
                     height: 50,
                     width: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Icon(Icons.arrow_back, color: Colors.grey.shade700, size: 20,),
+                    child: Icon(Icons.arrow_back, color: Colors.white, size: 30,),
                   ),
                 ),
                 Text(
                   "PLAYING NOW",
                   style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade800,
+                      fontSize: 16,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold
                   ),
                 ),
                 Container(
                   height: 50,
                   width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Icon(Icons.menu, color: Colors.grey.shade700, size: 20,),
+                  child: Icon(Icons.menu, color: Colors.white, size: 23,),
                 ),
               ],
             ),
@@ -124,6 +116,8 @@ class _MainPlayerState extends State<MainPlayer> {
             ),
           ),
           Slider(
+            activeColor: Colors.grey,
+            inactiveColor: Colors.white,
             min: 0,
             max: duration.inSeconds.toDouble(),
             value: valuePosition,
@@ -154,21 +148,13 @@ class _MainPlayerState extends State<MainPlayer> {
                 Container(
                   height: 60,
                   width: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Icon(Icons.shuffle, size: 20, color: Colors.black,),
+                  child: Icon(Icons.shuffle, size: 30, color: Colors.white,),
                 ),
                 SizedBox(width: 16,),
                 Container(
                   height: 60,
                   width: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Icon(Icons.skip_previous, size: 20, color: Colors.black,),
+                  child: Icon(Icons.skip_previous, size: 30, color: Colors.white,),
                 ),
                 SizedBox(width: 16,),
                 InkWell(
@@ -177,48 +163,36 @@ class _MainPlayerState extends State<MainPlayer> {
                     setState(() {
                       iconPlayPause = Icons.play_arrow;
                     });*/
-                    if (iconPlayPause == Icons.pause) {
+                    if (iconPlayPause == Icons.pause_circle_outline) {
                       assetsAudioPlayer.pause();
                       setState(() {
-                        iconPlayPause = Icons.play_arrow;
+                        iconPlayPause = Icons.play_circle_outline;
                       });
                     }
                     else {
                       assetsAudioPlayer.play();
                       setState(() {
-                        iconPlayPause = Icons.pause;
+                        iconPlayPause = Icons.pause_circle_outline;
                       });
                     }
                   },
                   child: Container(
                     height: 60,
                     width: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Icon(iconPlayPause, size: 20, color: Colors.white,),
+                    child: Icon(iconPlayPause, size: 60, color: Colors.white,),
                   ),
                 ),
                 SizedBox(width: 16,),
                 Container(
                   height: 60,
                   width: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Icon(Icons.skip_next, size: 20, color: Colors.black,),
+                  child: Icon(Icons.skip_next, size: 30, color: Colors.white,),
                 ),
                 SizedBox(width: 16,),
                 Container(
                   height: 60,
                   width: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Icon(Icons.repeat, size: 20, color: Colors.black,),
+                  child: Icon(Icons.repeat, size: 30, color: Colors.white,),
                 ),
               ],
             ),
