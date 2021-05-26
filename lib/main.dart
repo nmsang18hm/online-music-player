@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onlinemusicplayer/ui/empty_page.dart';
 import 'package:onlinemusicplayer/ui/home_page.dart';
 
 void main() {

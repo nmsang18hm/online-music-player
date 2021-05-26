@@ -3,30 +3,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MainPlayer extends StatefulWidget {
+  Audio audio;
+  MainPlayer({Key key, this.audio}) : super(key: key);
   @override
-  _MainPlayerState createState() => _MainPlayerState();
+  _MainPlayerState createState() => _MainPlayerState(audio);
 }
 
 class _MainPlayerState extends State<MainPlayer> {
   final assetsAudioPlayer = AssetsAudioPlayer();
-  Audio audio;
   Duration duration = Duration(minutes: 0);
   Duration position = Duration(minutes: 0);
   double valuePosition = 0.0;
   bool isSliderChanging = false;
 
-  IconData iconPlayPause;
+  IconData iconPlayPause = Icons.pause_circle_outline;
 
-  _MainPlayerState(){
-    audio = Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
-      metas: Metas(
-        title:  "Tan cung noi nho",
-        artist: "Will",
-        album: "CountryAlbum",
-        image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
-      ),
-    );
-    iconPlayPause = Icons.pause_circle_outline;
+  _MainPlayerState(Audio audio){
     assetsAudioPlayer.open(audio, showNotification: true);
     // Notice
     assetsAudioPlayer.current.listen((playingAudio) {

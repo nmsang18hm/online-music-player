@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:onlinemusicplayer/ui/main_player.dart';
 
@@ -408,7 +409,16 @@ class RecommentCard extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MainPlayer(),
+              builder: (context) => MainPlayer(
+                audio: Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
+                  metas: Metas(
+                    title:  "Tan cung noi nho",
+                    artist: "Will",
+                    album: "CountryAlbum",
+                    image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
+                  ),
+                ),
+              ),
             ));
       },
     );
@@ -431,7 +441,16 @@ class _HotPlayListCardState extends State<HotPlayListCard> {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MainPlayer(),
+              builder: (context) => MainPlayer(
+                audio: Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
+                  metas: Metas(
+                    title:  "Tan cung noi nho",
+                    artist: "Will",
+                    album: "CountryAlbum",
+                    image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
+                  ),
+                ),
+              ),
             ));
       },
       child: Padding(
