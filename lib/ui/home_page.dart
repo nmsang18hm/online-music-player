@@ -3,7 +3,14 @@ import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:onlinemusicplayer/model/song.dart';
 import 'package:onlinemusicplayer/ui/main_player.dart';
+import 'package:onlinemusicplayer/ui/playlist.dart';
+import 'package:onlinemusicplayer/ui/search_page.dart';
+import 'playlist.dart';
+import 'recommend_card.dart';
+import 'hot_playlist_card.dart';
+import 'choices_card.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -17,18 +24,103 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
+
+  int currentIndex = 0;
+  final List<Widget> screens = [
+    HomePage(),
+    SearchPage(),
+    Episode6PlaylistView()
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: screens[currentIndex],
+      bottomNavigationBar: Container(
+        height: 60,
+        color: null,
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: currentIndex,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Color(0xff181c27),
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Color(0xff5d6169),
+            iconSize: 30,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.library_music_rounded), label: 'Library'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.local_fire_department_rounded), label: 'Hotlist')
+            ],
+            onTap: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
+          )
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
   var tabbarController;
-  var selectIndex = 0;
+
+  List<Song> recommendedSongList = [
+    Song(audio:  Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
+      metas: Metas(
+        title:  "Tan cung noi nho",
+        artist: "Will",
+        album: "CountryAlbum",
+        image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
+      ),
+    ),),
+    Song(audio:  Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
+      metas: Metas(
+        title:  "Tan cung noi nho",
+        artist: "Will",
+        album: "CountryAlbum",
+        image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
+      ),
+    ),),
+    Song(audio:  Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
+      metas: Metas(
+        title:  "Tan cung noi nho",
+        artist: "Will",
+        album: "CountryAlbum",
+        image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
+      ),
+    ),),
+  ];
+
+  List<RecommentCard> recommendedCardList = [];
+
   @override
   void initState() {
     super.initState();
     tabbarController = TabController(vsync: this, initialIndex: 0, length: 2);
+    recommendedSongList.forEach((element) {
+      recommendedCardList.add(RecommentCard(song: element,));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xff181c27),
       appBar: AppBar(
         leading: Icon(Icons.menu),
         title: Padding(
@@ -50,6 +142,13 @@ class _MyHomePageState extends State<MyHomePage>
                   hintStyle: TextStyle(
                     color: Colors.white,
                   )),
+              onEditingComplete: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchPage(),
+                    ));
+              },
             ),
           ),
         ),
@@ -82,14 +181,7 @@ class _MyHomePageState extends State<MyHomePage>
                   height: 250,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: [
-                      RecommentCard(
-                        image: Random().nextInt(7) + 1,
-                      ),
-                      RecommentCard(
-                        image: Random().nextInt(7) + 1,
-                      )
-                    ],
+                    children: recommendedCardList,
                   ),
                 ),
                 Row(
@@ -289,252 +381,6 @@ class _MyHomePageState extends State<MyHomePage>
               ],
             ),
           ),
-          /*Positioned(
-            bottom: 0,
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    children: [
-                      Flexible(
-                          flex: 1,
-                          fit: FlexFit.tight,
-                          child: NavigateBottomItem(
-                            icon: Icons.history,
-                            title: "Discover",
-                          )),
-                      Flexible(
-                          flex: 1,
-                          fit: FlexFit.tight,
-                          child: NavigateBottomItem(
-                            icon: Icons.album,
-                            title: "Albums",
-                          )),
-                      Flexible(
-                          flex: 1,
-                          fit: FlexFit.tight,
-                          child: NavigateBottomItem(
-                            icon: Icons.music_note,
-                            title: "My Songs",
-                          )),
-                      Flexible(
-                          flex: 1,
-                          fit: FlexFit.tight,
-                          child: NavigateBottomItem(
-                            icon: Icons.account_circle,
-                            title: "Profile",
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          )*/
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.white,
-        showUnselectedLabels: true,
-        items: [
-          // ignore: deprecated_member_use
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
-          // ignore: deprecated_member_use
-          BottomNavigationBarItem(icon: Icon(Icons.album), title: Text("Album")),
-          // ignore: deprecated_member_use
-          BottomNavigationBarItem(icon: Icon(Icons.music_note), title: Text("My songs")),
-          // ignore: deprecated_member_use
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), title: Text("Profile")),
-        ],
-      ),
-    );
-  }
-}
-
-class NavigateBottomItem extends StatelessWidget {
-  final icon;
-  final String title;
-  NavigateBottomItem({this.icon, this.title});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 90,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 30,
-          ),
-          Text(
-            title.toUpperCase(),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class RecommentCard extends StatelessWidget {
-  final image;
-  RecommentCard({this.image});
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                "assets/images/p$image.jpg",
-                height: 150,
-                width: 300,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Text(
-              "Sound of water",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-            Text("Denise Brewer")
-          ],
-        ),
-      ),
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainPlayer(
-                audio: Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
-                  metas: Metas(
-                    title:  "Tan cung noi nho",
-                    artist: "Will",
-                    album: "CountryAlbum",
-                    image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
-                  ),
-                ),
-              ),
-            ));
-      },
-    );
-  }
-}
-
-class HotPlayListCard extends StatefulWidget {
-  final image;
-  final tag;
-  HotPlayListCard({this.image,this.tag});
-  @override
-  _HotPlayListCardState createState() => _HotPlayListCardState();
-}
-
-class _HotPlayListCardState extends State<HotPlayListCard> {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainPlayer(
-                audio: Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
-                  metas: Metas(
-                    title:  "Tan cung noi nho",
-                    artist: "Will",
-                    album: "CountryAlbum",
-                    image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
-                  ),
-                ),
-              ),
-            ));
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Hero(tag: widget.tag,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      "assets/images/p${widget.image}.jpg",
-                    )
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  "My Classic List",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.favorite,
-                    size: 15,
-                  ),
-                  Text("100"),
-                  Spacer(),
-                  Icon(
-                    Icons.track_changes,
-                    size: 15,
-                  ),
-                  Text("10 Tracks")
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ChoisesCard extends StatelessWidget {
-  final image;
-  ChoisesCard({this.image});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 5, bottom: 5),
-      child: Row(
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                "assets/images/p$image.jpg",
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-              )),
-          Padding(
-            padding: const EdgeInsets.only(left: 15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Counting Stars",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "OneRepublic Native",
-                  style: TextStyle(color: Colors.white.withOpacity(0.8)),
-                )
-              ],
-            ),
-          ),
-          Spacer(),
-          Column(
-            children: [Icon(Icons.favorite), Text("200")],
-          )
         ],
       ),
     );

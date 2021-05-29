@@ -1,6 +1,8 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:onlinemusicplayer/ui/bottom_play_container.dart';
+import 'bottom_play_container.dart';
 
 class MainPlayer extends StatefulWidget {
   Audio audio;
