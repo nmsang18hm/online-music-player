@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class ChoisesCard extends StatelessWidget {
+class SearchCard extends StatelessWidget {
   final image;
-  ChoisesCard({this.image});
+  SearchCard({this.image});
   @override
   Widget build(BuildContext context) {
     return Container(

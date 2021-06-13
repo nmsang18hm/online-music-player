@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Colors.black,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(currentIndex: 0,),
     );
   }
 }

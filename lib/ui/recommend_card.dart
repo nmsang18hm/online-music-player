@@ -24,7 +24,7 @@ class RecommentCard extends StatelessWidget {
             ),
             Text(
               song.audio.metas.title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             Text(song.audio.metas.artist)
           ],

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'main_player.dart';
 
-class HotPlayListCard extends StatefulWidget {
+class HotCard extends StatefulWidget {
   final image;
   final tag;
-  HotPlayListCard({this.image,this.tag});
+  HotCard({this.image,this.tag});
   @override
-  _HotPlayListCardState createState() => _HotPlayListCardState();
+  _HotCardState createState() => _HotCardState();
 }
 
-class _HotPlayListCardState extends State<HotPlayListCard> {
+class _HotCardState extends State<HotCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

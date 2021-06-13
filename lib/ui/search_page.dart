@@ -1,121 +1,167 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-class SearchPage extends StatelessWidget {
+import 'search_card.dart';
+
+class SearchPage extends StatefulWidget {
+  @override
+  _SearchPageState createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin{
+  var tabbarController;
+
+  @override
+  void initState() {
+    super.initState();
+    tabbarController = TabController(vsync: this, initialIndex: 0, length: 2);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
-            child: Column(
-              children: <Widget>[
-                Center(
-                  child: Text(
-                    "Search",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 48.0,
-                    ),
+      appBar: AppBar(
+        leading: Icon(Icons.menu),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15),
+          child: Container(
+            height: 40,
+            padding: EdgeInsets.only(left: 10, right: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white.withOpacity(0.2)),
+            child: TextField(
+              decoration: InputDecoration(
+                  icon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                    size: 20,
                   ),
+                  hintText: "Search album,song...",
+                  hintStyle: TextStyle(
+                    color: Colors.white,
+                  )),
+              autofocus: true,
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              child: Image.asset(
+                "assets/images/avatar.png",
+                width: 40,
+                height: 40,
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(50),
+            ),
+          )
+        ],
+      ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+            child: ListView(
+              children: [
+                TabBar(
+                  controller: tabbarController,
+                  indicatorColor: Colors.pink,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicatorWeight: 5,
+                  tabs: [
+                    Tab(
+                      child: Text("Songs"),
+                    ),
+                    Tab(
+                      child: Text("Playlists"),
+                    )
+                  ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      prefixIcon: Icon(Icons.search,color: Colors.black,size: 28.0,),
-                      filled: true,
-                      border: InputBorder.none,
-                      hintText: "Find your music",
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: LimitedBox(
+                    maxHeight: 490,
+                    child: TabBarView(
+                      controller: tabbarController,
+                      children: [
+                        ListView(
+                          shrinkWrap: true,
+                          children: [
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            )
+                          ],
+                        ),
+                        ListView(
+                          children: [
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            ),
+                            SearchCard(
+                              image: Random().nextInt(7) + 1,
+                            )
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ),
-                Expanded(
-                  child: GridView.count(
-                    primary: false,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 2,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 12.0),
-                          child: const Text("Pop Music",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28.0
-                          ),),
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 12.0),
-                          child: const Text("Rock",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28.0
-                          ),),
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 12.0),
-                          child: const Text("Hip Hop",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28.0
-                          ),),
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 12.0),
-                          child: const Text("Jazz",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28.0
-                          ),),
-                          color: Colors.amber,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 12.0),
-                          child: const Text("House",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28.0
-                          ),),
-                          color: Colors.green,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 12.0),
-                          child: const Text("Reggae",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28.0
-                          ),),
-                          color: Colors.red,
-                        ),
-                      ),
-
-                    ],
-                  ),
-                )
-
               ],
             ),
-
           )
-      ),
+        ],
+      )
     );
   }
 }

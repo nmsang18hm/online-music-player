@@ -10,13 +10,13 @@ import 'package:onlinemusicplayer/ui/search_page.dart';
 import 'playlist.dart';
 import 'recommend_card.dart';
 import 'hot_playlist_card.dart';
-import 'choices_card.dart';
+import 'search_card.dart';
 
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.currentIndex}) : super(key: key);
 
-  final String title;
+  final currentIndex;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -31,6 +31,12 @@ class _MyHomePageState extends State<MyHomePage>
     SearchPage(),
     Episode6PlaylistView()
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.currentIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,11 +148,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   hintStyle: TextStyle(
                     color: Colors.white,
                   )),
-              onEditingComplete: () {
+              onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SearchPage(),
+                      builder: (context) => MyHomePage(currentIndex: 1,),
                     ));
               },
             ),
@@ -178,7 +184,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  height: 250,
+                  height: 220,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: recommendedCardList,
@@ -187,7 +193,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 Row(
                   children: [
                     Text(
-                      "Hot Playlists",
+                      "Hot Songs",
                       style:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -215,115 +221,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   childAspectRatio: 1,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "album"
                     ),
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "a"
                     ),
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "b"
                     ),
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "c"
                     ),
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "d"
                     ),
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "e"
                     ),
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "f"
                     ),
-                    HotPlayListCard(
+                    HotCard(
                         image: Random().nextInt(7) + 1,tag: "g"
                     )
                   ],
-                ),
-                Text(
-                  "Our Choises for you",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                TabBar(
-                  controller: tabbarController,
-                  indicatorColor: Colors.pink,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorWeight: 5,
-                  tabs: [
-                    Tab(
-                      child: Text("Songs"),
-                    ),
-                    Tab(
-                      child: Text("Playlists"),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 25.0),
-                  child: LimitedBox(
-                    maxHeight: 400,
-                    child: TabBarView(
-                      controller: tabbarController,
-                      children: [
-                        ListView(
-                          shrinkWrap: true,
-                          children: [
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            )
-                          ],
-                        ),
-                        ListView(
-                          children: [
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            ChoisesCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Row(
                     children: [
                       Text(
-                        "Hot Singers",
+                        "Hot Playlists",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
@@ -352,28 +281,28 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   childAspectRatio: 1,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "2",
                     ),
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "3",
                     ),
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "4",
                     ),
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "5",
                     ),
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "6",
                     ),
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "7",
                     ),
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "8",
                     ),
-                    HotPlayListCard(
+                    HotCard(
                       image: Random().nextInt(7) + 1,tag: "9",
                     )
                   ],
