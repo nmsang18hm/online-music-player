@@ -1,16 +1,38 @@
-import 'package:flutter/material.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'main_player.dart';
+import 'package:flutter/material.dart';
+import 'package:onlinemusicplayer/entities/playlist.dart';
+import 'package:onlinemusicplayer/ui/home_page.dart';
+import 'package:onlinemusicplayer/ui/playlist_page.dart';
 
-class HotCard extends StatefulWidget {
-  final image;
-  final tag;
-  HotCard({this.image,this.tag});
+class HotPlaylistCard extends StatefulWidget {
+  final PlaylistEntity playlistEntity;
+  AssetsAudioPlayer assetsAudioPlayer;
+  HotPlaylistCard({this.playlistEntity, this.assetsAudioPlayer});
+
   @override
-  _HotCardState createState() => _HotCardState();
+  _HotPlaylistCardState createState() => _HotPlaylistCardState(assetsAudioPlayer);
 }
 
-class _HotCardState extends State<HotCard> {
+class _HotPlaylistCardState extends State<HotPlaylistCard> {
+  AssetsAudioPlayer assetsAudioPlayer;
+  String imageURL = 'assets/images/playlist.png';
+
+  _HotPlaylistCardState(AssetsAudioPlayer assetsAudioPlayer) {
+    this.assetsAudioPlayer = assetsAudioPlayer;
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.playlistEntity.listSong.length > 0) {
+      setState(() {
+        imageURL = widget.playlistEntity.listSong[0].audio.metas.image.path;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -18,16 +40,7 @@ class _HotCardState extends State<HotCard> {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MainPlayer(
-                audio: Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
-                  metas: Metas(
-                    title:  "Tan cung noi nho",
-                    artist: "Will",
-                    album: "CountryAlbum",
-                    image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
-                  ),
-                ),
-              ),
+              builder: (context) => PlaylistPage(widget.playlistEntity, assetsAudioPlayer),
             ));
       },
       child: Padding(
@@ -36,18 +49,19 @@ class _HotCardState extends State<HotCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Hero(tag: widget.tag,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      "assets/images/p${widget.image}.jpg",
-                    )
-                ),
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    imageURL,
+                    height: 185,
+                    width: 185,
+                    fit: BoxFit.cover,
+                  )
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  "My Classic List",
+                  widget.playlistEntity.name,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -63,7 +77,7 @@ class _HotCardState extends State<HotCard> {
                     Icons.track_changes,
                     size: 15,
                   ),
-                  Text("10 Tracks")
+                  Text(widget.playlistEntity.listSong.length.toString() + " Tracks")
                 ],
               )
             ],

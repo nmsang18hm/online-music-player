@@ -1,41 +1,46 @@
-import 'dart:math';
 import 'dart:ui';
-
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:onlinemusicplayer/model/song.dart';
-import 'package:onlinemusicplayer/ui/main_player.dart';
-import 'package:onlinemusicplayer/ui/playlist.dart';
+import 'package:onlinemusicplayer/entities/playlist.dart';
+import 'package:onlinemusicplayer/entities/song.dart';
+import 'package:onlinemusicplayer/services/PlaylistServices.dart';
+import 'package:onlinemusicplayer/services/SongService.dart';
+import 'package:onlinemusicplayer/ui/hot_playlist_card.dart';
+import 'package:onlinemusicplayer/ui/hot_song_card.dart';
+import 'package:onlinemusicplayer/ui/playlist_manage.dart';
+import 'package:onlinemusicplayer/ui/playlist_page.dart';
 import 'package:onlinemusicplayer/ui/search_page.dart';
-import 'playlist.dart';
+import 'bottom_play_container.dart';
+import 'playlist_page.dart';
 import 'recommend_card.dart';
-import 'hot_playlist_card.dart';
-import 'search_card.dart';
 
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.currentIndex}) : super(key: key);
+  MyHomePage({Key key, this.currentIndex, this.assetsAudioPlayer}) : super(key: key);
 
   final currentIndex;
+  AssetsAudioPlayer assetsAudioPlayer;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(assetsAudioPlayer);
 }
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
+  AssetsAudioPlayer assetsAudioPlayer;
 
   int currentIndex = 0;
-  final List<Widget> screens = [
-    HomePage(),
-    SearchPage(),
-    Episode6PlaylistView()
-  ];
+  List<Widget> screens;
+
+  _MyHomePageState(AssetsAudioPlayer assetsAudioPlayer) {
+    this.assetsAudioPlayer = assetsAudioPlayer;
+  }
 
   @override
   void initState() {
     super.initState();
     currentIndex = widget.currentIndex;
+    screens = [HomePage(assetsAudioPlayer), SearchPage(assetsAudioPlayer), PlaylistManage(assetsAudioPlayer)];
   }
 
   @override
@@ -62,8 +67,8 @@ class _MyHomePageState extends State<MyHomePage>
               BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.library_music_rounded), label: 'Library'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.local_fire_department_rounded), label: 'Hotlist')
+              //BottomNavigationBarItem(
+                  //icon: Icon(Icons.local_fire_department_rounded), label: 'Hotlist')
             ],
             onTap: (index) {
               setState(() {
@@ -78,53 +83,72 @@ class _MyHomePageState extends State<MyHomePage>
 }
 
 class HomePage extends StatefulWidget {
+  AssetsAudioPlayer assetsAudioPlayer;
+  HomePage(AssetsAudioPlayer assetsAudioPlayer) {
+    this.assetsAudioPlayer = assetsAudioPlayer;
+  }
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(assetsAudioPlayer);
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
   var tabbarController;
-
-  List<Song> recommendedSongList = [
-    Song(audio:  Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
-      metas: Metas(
-        title:  "Tan cung noi nho",
-        artist: "Will",
-        album: "CountryAlbum",
-        image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
-      ),
-    ),),
-    Song(audio:  Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
-      metas: Metas(
-        title:  "Tan cung noi nho",
-        artist: "Will",
-        album: "CountryAlbum",
-        image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
-      ),
-    ),),
-    Song(audio:  Audio("assets/audios/Tan-Cung-Noi-Nho-Will.mp3",
-      metas: Metas(
-        title:  "Tan cung noi nho",
-        artist: "Will",
-        album: "CountryAlbum",
-        image: MetasImage.asset("assets/images/artworks-000394925472-n3c8pm-t500x500.jpg"), //can be MetasImage.network
-      ),
-    ),),
-  ];
+  AssetsAudioPlayer assetsAudioPlayer;
+  Future fetchS = fetchSongs();
+  //Future fetchP = fetchSongs();
+  Widget bottomPlayer = SizedBox(width: 1, height: 1,);
 
   List<RecommentCard> recommendedCardList = [];
+  List<HotSongCard> hotSongCardList = [];
+  List<HotPlaylistCard> hotPlaylistCardList = [];
+
+
+  _HomePageState(AssetsAudioPlayer assetsAudioPlayer) {
+    this.assetsAudioPlayer = assetsAudioPlayer;
+  }
 
   @override
   void initState() {
     super.initState();
     tabbarController = TabController(vsync: this, initialIndex: 0, length: 2);
-    recommendedSongList.forEach((element) {
-      recommendedCardList.add(RecommentCard(song: element,));
-    });
+    fetchS.then((value) => value.forEach((element) {
+      recommendedCardList.add(RecommentCard(song: element, assetsAudioPlayer: assetsAudioPlayer,));
+      hotSongCardList.add(HotSongCard(song: element, assetsAudioPlayer: assetsAudioPlayer,));
+    }));
+
+  }
+  
+  Future<List<PlaylistEntity>> getHotPlaylists() async {
+    List<PlaylistEntity> list = [];
+    PlaylistEntity playlistEntity1 = await searchPlaylists('Nhac Hay Thang 3');
+    list.add(playlistEntity1);
+    PlaylistEntity playlistEntity2 = await searchPlaylists('Nhac Hay Thang 4');
+    list.add(playlistEntity2);
+    PlaylistEntity playlistEntity3 = await searchPlaylists('Nhac Tam Trang');
+    list.add(playlistEntity3);
+    PlaylistEntity playlistEntity4 = await searchPlaylists('Nhac Buon');
+    list.add(playlistEntity4);
+    //PlaylistEntity playlistEntity5 = await searchPlaylists('Dance');
+    //list.add(playlistEntity5);
+    //PlaylistEntity playlistEntity6 = await searchPlaylists('Pop');
+    //list.add(playlistEntity6);
+    return list;
   }
 
   @override
   Widget build(BuildContext context) {
+    if(this.assetsAudioPlayer.current.hasValue) {
+      bottomPlayer = Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          bottomPlayContainer(assetsAudioPlayer, context),
+        ],
+      );
+    }
+    else {
+      bottomPlayer = SizedBox(width: 1, height: 1,);
+    }
+
     return Scaffold(
       backgroundColor: Color(0xff181c27),
       appBar: AppBar(
@@ -152,7 +176,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyHomePage(currentIndex: 1,),
+                      builder: (context) => MyHomePage(currentIndex: 1, assetsAudioPlayer: assetsAudioPlayer,),
                     ));
               },
             ),
@@ -184,11 +208,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  height: 220,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: recommendedCardList,
-                  ),
+                  height: 270,
+                  child: FutureBuilder<List<Song>>(future: fetchS, builder: (context, snapshot) {
+                    if(snapshot.hasError) print(snapshot.error);
+                    if(snapshot.connectionState == ConnectionState.done) {
+                      return ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: recommendedCardList,
+                      );
+                    }
+                    else {
+                      return Center(child: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),),
+                      ),);
+                    }
+                  },)
                 ),
                 Row(
                   children: [
@@ -215,38 +252,26 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     )
                   ],
                 ),
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "album"
-                    ),
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "a"
-                    ),
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "b"
-                    ),
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "c"
-                    ),
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "d"
-                    ),
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "e"
-                    ),
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "f"
-                    ),
-                    HotCard(
-                        image: Random().nextInt(7) + 1,tag: "g"
-                    )
-                  ],
-                ),
+                FutureBuilder<List<Song>>(future: fetchS, builder: (context, snapshot) {
+                  if(snapshot.hasError) print(snapshot.error);
+                  if(snapshot.connectionState == ConnectionState.done) {
+                    return GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.72,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: hotSongCardList
+                    );
+                  }
+                  else {
+                    return Center(child: SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),),
+                    ),);
+                  }
+                },),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Row(
@@ -275,41 +300,34 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     ],
                   ),
                 ),
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "2",
-                    ),
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "3",
-                    ),
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "4",
-                    ),
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "5",
-                    ),
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "6",
-                    ),
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "7",
-                    ),
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "8",
-                    ),
-                    HotCard(
-                      image: Random().nextInt(7) + 1,tag: "9",
-                    )
-                  ],
-                )
+                FutureBuilder<List<PlaylistEntity>>(future: getHotPlaylists(), builder: (context, snapshot) {
+                  if(snapshot.hasError) print(snapshot.error);
+                  if(snapshot.connectionState == ConnectionState.done) {
+                    hotPlaylistCardList.clear();
+                    snapshot.data.forEach((element) {
+                      hotPlaylistCardList.add(HotPlaylistCard(playlistEntity: element, assetsAudioPlayer: assetsAudioPlayer,));
+                    });
+                    return GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.72,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: hotPlaylistCardList
+                    );
+                  }
+                  else {
+                    return Center(child: SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),),
+                    ),);
+                  }
+                },),
               ],
             ),
           ),
+          bottomPlayer,
         ],
       ),
     );

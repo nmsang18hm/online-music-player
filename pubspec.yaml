@@ -25,8 +25,8 @@ dependencies:
     sdk: flutter
   assets_audio_player: ^3.0.3+2
   file_picker: ^3.0.1
-  cloud_firestore: ^1.0.5
-  firebase_storage: ^8.0.3
+  sqflite:
+  path:
 
 
   # The following adds the Cupertino Icons font to your application.

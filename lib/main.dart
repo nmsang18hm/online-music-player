@@ -1,4 +1,7 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:onlinemusicplayer/database/db_services.dart';
+import 'package:onlinemusicplayer/services/SongService.dart';
 import 'package:onlinemusicplayer/ui/home_page.dart';
 
 void main() {
@@ -11,6 +14,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  AssetsAudioPlayer assetsAudioPlayer = new AssetsAudioPlayer();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +24,7 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Colors.black,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(currentIndex: 0,),
+      home: MyHomePage(currentIndex: 0, assetsAudioPlayer: assetsAudioPlayer,),
     );
   }
 }

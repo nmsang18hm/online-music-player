@@ -1,16 +1,35 @@
-import 'dart:math';
-
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:onlinemusicplayer/entities/playlist.dart';
+import 'package:onlinemusicplayer/entities/song.dart';
+import 'package:onlinemusicplayer/services/PlaylistServices.dart';
+import 'package:onlinemusicplayer/services/SongService.dart';
+import 'package:onlinemusicplayer/ui/search_playlist_card.dart';
 
-import 'search_card.dart';
+import 'search_song_card.dart';
 
 class SearchPage extends StatefulWidget {
+  AssetsAudioPlayer assetsAudioPlayer;
+
+  SearchPage(AssetsAudioPlayer assetsAudioPlayer) {
+    this.assetsAudioPlayer = assetsAudioPlayer;
+  }
   @override
-  _SearchPageState createState() => _SearchPageState();
+  _SearchPageState createState() => _SearchPageState(assetsAudioPlayer);
 }
 
 class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin{
   var tabbarController;
+  AssetsAudioPlayer assetsAudioPlayer;
+  Future searchS;
+  Future searchP;
+
+  List<SearchSongCard> resultSongs = [];
+  List<SearchPlaylistCard> resultPlaylists = [];
+
+  _SearchPageState(AssetsAudioPlayer assetsAudioPlayer) {
+    this.assetsAudioPlayer = assetsAudioPlayer;
+  }
 
   @override
   void initState() {
@@ -42,6 +61,21 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                     color: Colors.white,
                   )),
               autofocus: true,
+              onChanged: (text) {
+                setState(() {
+                  resultSongs.clear();
+                  resultPlaylists.clear();
+                  if (text != "") {
+                    searchS = searchSongs(text);
+                    searchS.then((value) => value.forEach((element) {
+                      resultSongs.add(SearchSongCard(song: element, assetsAudioPlayer: assetsAudioPlayer,));
+                    }));
+                    searchP = searchPlaylists(text);
+                    searchP.then((value) => resultPlaylists.add(SearchPlaylistCard(playlistEntity: value, assetsAudioPlayer: assetsAudioPlayer,)));
+                  }
+                });
+              },
+
             ),
           ),
         ),
@@ -73,10 +107,10 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                   indicatorWeight: 5,
                   tabs: [
                     Tab(
-                      child: Text("Songs"),
+                      child: Text("Songs", style: TextStyle(fontSize: 16),),
                     ),
                     Tab(
-                      child: Text("Playlists"),
+                      child: Text("Playlists", style: TextStyle(fontSize: 16),),
                     )
                   ],
                 ),
@@ -87,72 +121,56 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                     child: TabBarView(
                       controller: tabbarController,
                       children: [
-                        ListView(
-                          shrinkWrap: true,
-                          children: [
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            )
-                          ],
-                        ),
-                        ListView(
-                          children: [
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            ),
-                            SearchCard(
-                              image: Random().nextInt(7) + 1,
-                            )
-                          ],
-                        )
+                        FutureBuilder<List<Song>>(future: searchS, builder: (context, snapshot) {
+                          if(snapshot.hasError) print(snapshot.error);
+                          if(snapshot.connectionState == ConnectionState.done) {
+                            if(resultSongs.length == 0) {
+                              return Center(child: Text("Khong co ket qua phu hop.", style: TextStyle(fontSize: 16),),);
+                            }
+                            else {
+                              return ListView(
+                                children: resultSongs,
+                                shrinkWrap: true,
+                              );
+                            }
+                          }
+                          else if(snapshot.connectionState == ConnectionState.none) {
+                            return Center(child: Text("Khong co ket qua phu hop.", style: TextStyle(fontSize: 16),),);
+                          }
+                          else {
+                            return Center(child: SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),),
+                            ),);
+                          }
+                        },),
+                        FutureBuilder<PlaylistEntity>(future: searchP, builder: (context, snapshot) {
+                          if(snapshot.hasError) print(snapshot.error);
+                          if(snapshot.connectionState == ConnectionState.done) {
+                            if(resultPlaylists.length == 0) {
+                              return Center(child: Text("Khong co ket qua phu hop.", style: TextStyle(fontSize: 16),),);
+                            }
+                            else {
+                              return ListView(
+                                children: resultPlaylists,
+                                shrinkWrap: true,
+                              );
+                            }
+                          }
+                          else if(snapshot.connectionState == ConnectionState.none) {
+                            return Center(child: Text("Khong co ket qua phu hop.", style: TextStyle(fontSize: 16),),);
+                          }
+                          else {
+                            return Center(child: SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),),
+                            ),);
+                          }
+                        },),
                       ],
                     ),
                   ),
